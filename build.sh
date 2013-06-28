@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#  build_poco_android.sh
+#  build.sh
 #
 #
 
