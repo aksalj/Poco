@@ -1,4 +1,4 @@
-Poco build Script
+Poco Build Script
 =================
 
 Simple build script for Poco C++ library. Supports build for Android, iOS and Mac OS.
@@ -13,3 +13,5 @@ Usage:
 Important:
 	
 	Depends on Xcode's build system(see Platform/iOS/build_ios.sh) and Android's NDK ( you can add a standalone toolchain like the one in Platform/Android/toolchain/bin to your PATH).
+
+For more info on Poco, visit [http://pocoproject.org/](http://pocoproject.org/)
