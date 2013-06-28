@@ -1,0 +1,6 @@
+
+.DS_Store
+Build/*
+Archives/
+Platform/Android/toolchain/*
+Poco/*/*
