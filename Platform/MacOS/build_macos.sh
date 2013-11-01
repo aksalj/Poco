@@ -154,7 +154,7 @@ cd $POCO
 --static \
 --no-tests \
 --no-samples \
---omit=CppUnit,CppParser,CodeGeneration,PageCompiler,Remoting,Data/MySQL,Data/ODBC,Zip
+--omit=CppUnit,CppParser,CodeGeneration,PageCompiler,Remoting,Data/MySQL,Data/ODBC
 
 make -j32
 

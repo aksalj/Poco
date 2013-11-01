@@ -143,7 +143,7 @@ buildAndroid
 elif [ "$BUILD" == 'MacOS' ]; then
 buildMacOS
 #witeMessage "MacOS build needs some work..."
-exit 1
+#exit 1
 else
 witeMessage "No target platform(ALL, iOS, Android or MacOS) specified."
 exit 1
