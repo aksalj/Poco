@@ -15,4 +15,4 @@ iOS:
 MacOS:
 	
 		Darwin/include/ - Poco headers
-		Darwin/x86_64/ - Static libs(archives)	
+		Darwin/x86_64/ - Static libs (archives)	
