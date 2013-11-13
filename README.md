@@ -20,3 +20,7 @@ Poco C++ Library: [http://pocoproject.org/](http://pocoproject.org/)
 Android NDK: [http://developer.android.com/tools/sdk/ndk/index.html](http://developer.android.com/tools/sdk/ndk/index.html)
 
 Xcode: [https://developer.apple.com/xcode/](https://developer.apple.com/xcode/)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/aksalj/poco/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
