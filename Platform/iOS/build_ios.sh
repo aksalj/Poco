@@ -46,8 +46,16 @@ SIMULATOR_ARCH=i686
 SIMULATOR_ARCH64=x86_64
 
 # Locate ar
-ARM_BINARY_AR=`xcrun --sdk iphoneos -find ar`
-DEV_BINARY_AR=`xcrun --sdk iphonesimulator -find ar`
+IPHONEOS_BINARY_AR=`xcrun --sdk iphoneos -find ar`
+IPHONESIM_BINARY_AR=`xcrun --sdk iphonesimulator -find ar`
+
+# Locate ranlib
+IPHONEOS_BINARY_RANLIB=`xcrun --sdk iphoneos -find ranlib`
+IPHONESIM_BINARY_RANLIB=`xcrun --sdk iphonesimulator -find ranlib`
+
+# Locate libtool
+#IPHONEOS_BINARY_RANLIB=`xcrun --sdk iphoneos -find libtool`
+#IPHONESIM_BINARY_RANLIB=`xcrun --sdk iphonesimulator -find libtool`
 
 VERSION_TYPE=Alpha
 FRAMEWORK_NAME=Poco
@@ -108,8 +116,8 @@ echo "Decomposing $file for iPhoneSimulator..."
 #mkdir -p $PATH_TO_LIBS_i386/obj
 mkdir -p $PATH_TO_LIBS_i386/${file}
 mkdir -p $PATH_TO_LIBS_x86_64/${file}
-(cd $PATH_TO_LIBS_i386/$file; $DEV_BINARY_AR -x ../libPoco$file.a );
-(cd $PATH_TO_LIBS_x86_64/$file; $DEV_BINARY_AR -x ../libPoco$file.a );
+(cd $PATH_TO_LIBS_i386/$file; $IPHONESIM_BINARY_AR -x ../libPoco$file.a );
+(cd $PATH_TO_LIBS_x86_64/$file; $IPHONESIM_BINARY_AR -x ../libPoco$file.a );
 done
 
 for file in {Foundation$DEBUG,Util$DEBUG,XML$DEBUG,Net$DEBUG,NetSSL$DEBUG,Crypto$DEBUG,Data$DEBUG,DataSQLite$DEBUG}
@@ -119,20 +127,20 @@ echo "Decomposing $file for iPhoneOS..."
 mkdir -p $PATH_TO_LIBS_ARM7/${file}
 mkdir -p $PATH_TO_LIBS_ARM7s/${file}
 mkdir -p $PATH_TO_LIBS_ARM64/${file}
-(cd $PATH_TO_LIBS_ARM7/$file; $ARM_BINARY_AR -x ../libPoco$file.a );
-(cd $PATH_TO_LIBS_ARM7s/$file; $ARM_BINARY_AR -x ../libPoco$file.a );
-(cd $PATH_TO_LIBS_ARM64/$file; $ARM_BINARY_AR -x ../libPoco$file.a );
+(cd $PATH_TO_LIBS_ARM7/$file; $IPHONEOS_BINARY_AR -x ../libPoco$file.a );
+(cd $PATH_TO_LIBS_ARM7s/$file; $IPHONEOS_BINARY_AR -x ../libPoco$file.a );
+(cd $PATH_TO_LIBS_ARM64/$file; $IPHONEOS_BINARY_AR -x ../libPoco$file.a );
 done
 doneSection
 
 witeMessage "Linking each architecture into a libPoco${DEBUG}.a"
 echo "Linking objects for iPhoneSimulator..."
-(cd $PATH_TO_LIBS_i386; $DEV_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
-(cd $PATH_TO_LIBS_x86_64; $DEV_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
+(cd $PATH_TO_LIBS_i386; $IPHONESIM_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
+(cd $PATH_TO_LIBS_x86_64; $IPHONESIM_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
 echo "Linking objects for iPhoneOS..."
-(cd $PATH_TO_LIBS_ARM7; $DEV_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
-(cd $PATH_TO_LIBS_ARM7s; $DEV_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
-(cd $PATH_TO_LIBS_ARM64; $DEV_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
+(cd $PATH_TO_LIBS_ARM7; $IPHONEOS_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
+(cd $PATH_TO_LIBS_ARM7s; $IPHONEOS_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
+(cd $PATH_TO_LIBS_ARM64; $IPHONEOS_BINARY_AR crus libPoco${DEBUG}.a Foundation$DEBUG/*.o Util$DEBUG/*.o XML$DEBUG/*.o Net$DEBUG/*.o NetSSL$DEBUG/*.o Crypto$DEBUG/*.o Data$DEBUG/*.o DataSQLite$DEBUG/*.o );
 doneSection
 
 for file in {Foundation$DEBUG,Util$DEBUG,XML$DEBUG,Net$DEBUG,NetSSL$DEBUG,Crypto$DEBUG,Data$DEBUG,DataSQLite$DEBUG}
@@ -158,6 +166,9 @@ xcrun -sdk iphoneos lipo \
 -arch arm64 "$PATH_TO_LIBS_ARM64/libPoco${DEBUG}.a" \
 -o "$FRAMEWORK_INSTALL_NAME" \
 || abort "Lipo $1 failed"
+
+$IPHONEOS_BINARY_RANLIB "$FRAMEWORK_INSTALL_NAME"
+
 
 witeMessage "Framework: Copying includes..."
 for i in {Foundation,Util,XML,Net,NetSSL_OpenSSL,Crypto,Data,Data/SQLite}
@@ -203,8 +214,8 @@ cd $POCO
 --no-samples \
 --omit=$POCO_OMIT
 
-make -j32 POCO_TARGET_OSARCH=i686
-make -j32 POCO_TARGET_OSARCH=x86_64
+make -j32 POCO_TARGET_OSARCH=i686 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
+make -j32 POCO_TARGET_OSARCH=x86_64 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
 
 ./configure \
 --config=iPhone-clang-libc++ \
@@ -213,8 +224,8 @@ make -j32 POCO_TARGET_OSARCH=x86_64
 --no-samples \
 --omit=$POCO_OMIT
 
-make -j32 POCO_TARGET_OSARCH=armv7
-make -j32 POCO_TARGET_OSARCH=armv7s
-make -j32 POCO_TARGET_OSARCH=arm64
+make -j32 POCO_TARGET_OSARCH=armv7 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
+make -j32 POCO_TARGET_OSARCH=armv7s IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
+make -j32 POCO_TARGET_OSARCH=arm64 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
 
 buildFramework 'RELEASE' ${PWD}/lib `pwd`/lib/iPhoneSimulator/$SIMULATOR_ARCH `pwd`/lib/iPhoneSimulator/$SIMULATOR_ARCH64 `pwd`/lib/iPhoneOS/$iPhoneARCH7  `pwd`/lib/iPhoneOS/$iPhoneARCH7s  `pwd`/lib/iPhoneOS/$iPhoneARCH64
