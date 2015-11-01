@@ -33,6 +33,7 @@ echo
 }
 #===============================================================================
 
+ENABLE_BYTECODE=${ENABLE_BYTECODE:-true}
 POCO_OMIT=${POCO_OMIT:-"Crypto,NetSSL_OpenSSL,CppUnit,CppParser,CodeGeneration,PageCompiler,Remoting,Data/MySQL,Data/ODBC,Zip"}
 
 PLATFORMS=/Applications/Xcode.app/Contents/Developer/Platforms
@@ -207,6 +208,8 @@ doneSection
 #Execution starts here
 cd $POCO
 
+$ENABLE_BYTECODE && export CXXFLAGS2="-fembed-bitcode"
+
 ./configure \
 --config=iPhoneSimulator-clang-libc++ \
 --static \
@@ -214,8 +217,8 @@ cd $POCO
 --no-samples \
 --omit=$POCO_OMIT
 
-make -j32 POCO_TARGET_OSARCH=i686 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
-make -j32 POCO_TARGET_OSARCH=x86_64 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
+make -j32 POCO_TARGET_OSARCH=i686 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION" POCO_FLAGS="$CXXFLAGS2"
+make -j32 POCO_TARGET_OSARCH=x86_64 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION" POCO_FLAGS="$CXXFLAGS2"
 
 ./configure \
 --config=iPhone-clang-libc++ \
@@ -224,8 +227,8 @@ make -j32 POCO_TARGET_OSARCH=x86_64 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
 --no-samples \
 --omit=$POCO_OMIT
 
-make -j32 POCO_TARGET_OSARCH=armv7 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
-make -j32 POCO_TARGET_OSARCH=armv7s IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
-make -j32 POCO_TARGET_OSARCH=arm64 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION"
+make -j32 POCO_TARGET_OSARCH=armv7 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION" POCO_FLAGS="$CXXFLAGS2"
+make -j32 POCO_TARGET_OSARCH=armv7s IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION" POCO_FLAGS="$CXXFLAGS2"
+make -j32 POCO_TARGET_OSARCH=arm64 IPHONE_SDK_VERSION_MIN="$IPHONE_SDK_VERSION" POCO_FLAGS="$CXXFLAGS2"
 
 buildFramework 'RELEASE' ${PWD}/lib `pwd`/lib/iPhoneSimulator/$SIMULATOR_ARCH `pwd`/lib/iPhoneSimulator/$SIMULATOR_ARCH64 `pwd`/lib/iPhoneOS/$iPhoneARCH7  `pwd`/lib/iPhoneOS/$iPhoneARCH7s  `pwd`/lib/iPhoneOS/$iPhoneARCH64
